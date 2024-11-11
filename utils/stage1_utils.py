@@ -197,7 +197,8 @@ def predict_YOLO(yaml_filename, trained_weights, iou=0.5, conf=0.25, batch=1, im
 ### SAHI ###
 ############
 
-def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score = True, to_run = False):
+def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score = True, to_run = False, rect_th = 0.2,
+                confidence_threshold=0.5,overlap_height_ratio=0.20, overlap_width_ratio=0.20):
     if len(im_pths)>0:
         dest_dir = Path(f"{im_pths[0].parent.parent}/SAHI_results_{suffix}")
         dest_dir.mkdir(parents=True, exist_ok=True)
@@ -210,7 +211,7 @@ def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score
         detection_model = AutoDetectionModel.from_pretrained(
             model_type='yolov8',
             model_path=f'{weights_file}',
-            confidence_threshold=0.5,
+            confidence_threshold=confidence_threshold,
             device="cuda:0",  # or 'cuda:0'
         )
 
@@ -224,10 +225,10 @@ def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score
                 detection_model,
                 slice_height=sz,
                 slice_width=sz,
-                overlap_height_ratio=0.20,
-                overlap_width_ratio=0.20)
+                overlap_height_ratio=overlap_height_ratio,
+                overlap_width_ratio=overlap_width_ratio)
 
-            result.export_visuals(export_dir=f"{dest_dir}/", file_name= f"{name[:-4]}_{suffix}", hide_labels = True)
+            result.export_visuals(export_dir=f"{dest_dir}/", file_name= f"{name[:-4]}_{suffix}", hide_labels = True, rect_th= rect_th)
 
             txt_pth = str(dest_dir)+'/'+ name.replace(".jpg", '.txt')
 
