@@ -197,7 +197,7 @@ def predict_YOLO(yaml_filename, trained_weights, iou=0.5, conf=0.25, batch=1, im
 ### SAHI ###
 ############
 
-def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score = True, to_run = False, rect_th = 0.2,
+def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score = True, to_run = False, rect_th = 5,
                 confidence_threshold=0.5,overlap_height_ratio=0.20, overlap_width_ratio=0.20):
     if len(im_pths)>0:
         dest_dir = Path(f"{im_pths[0].parent.parent}/SAHI_results_{suffix}")
